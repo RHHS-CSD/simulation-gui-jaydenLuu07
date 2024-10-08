@@ -5,6 +5,8 @@
  */
 package automatastarter;
 
+import java.awt.Color;
+import java.awt.Dimension;
 import utils.CardSwitcher;
 import utils.ImageUtil;
 import java.awt.Graphics;
@@ -25,19 +27,31 @@ import javax.swing.Action;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 import javax.swing.Timer;
+import utils.Constants;
+import automatastarter.LangtonsAnt;
 
 /**
  *
  * @author michael.roy-diclemen
  */
 public class GamePanel extends javax.swing.JPanel implements MouseListener {
-
+    BufferedImage img2;
+    LangtonsAnt l = new LangtonsAnt();
+    
     public static final String CARD_NAME = "game";
 
     CardSwitcher switcher; // This is the parent panel
     Timer animTimer;
-    // Image img1 = Toolkit.getDefaultToolkit().getImage("yourFile.jpg");
-    BufferedImage img1;
+    
+    //Variables for grid
+    int rows = Constants.MINROW;
+    int columns = Constants.MINCOLUMN;
+    
+    //Variables for ants
+    int antNumber;
+    int maxAntHealth;
+    int[] antHealth;
+    
     //variables to control your animation elements
     int x = 0;
     int y = 10;
@@ -49,8 +63,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      */
     public GamePanel(CardSwitcher p) {
         initComponents();
-
-        img1 = ImageUtil.loadAndResizeImage("yourFile.jpg", 300, 300);//, WIDTH, HEIGHT)//ImageIO.read(new File("yourFile.jpg"));
+        setPreferredSize(new Dimension(Constants.WIDTH,Constants.HEIGHT));
+        l.makeGrid(0);
 
         this.setFocusable(true);
 
@@ -83,11 +97,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }
 
     public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        if (img1 != null) {
-            g.drawImage(img1, x, y, this);
+        if(jCheckBox1.isSelected()==true){
+            if(antNumber!=0){
+                l.turnAnts();
+                l.flipColour();
+                l.moveAnts();
+            }
         }
-        g.drawLine(lineX, 0, 300, 300);
+        super.paintComponent(g);
+        l.printGrid(g);
+        img2 = ImageUtil.loadAndResizeImage("movingAnt.png", l.cellSize, l.cellSize);
+        for(int i=0;i<antNumber;i++){
+            if (img2!=null){
+                g.drawImage(img2, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
+            }
+        }
+        
     }
 
     /**
@@ -99,7 +124,15 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jButton5 = new javax.swing.JButton();
+        rowSlider = new javax.swing.JSlider();
+        columnSlider = new javax.swing.JSlider();
         jLabel1 = new javax.swing.JLabel();
+        jLabel2 = new javax.swing.JLabel();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jTextField1 = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
+        jTextField2 = new javax.swing.JTextField();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -107,23 +140,114 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
         });
 
-        jLabel1.setText("Game");
+        jButton5.setText("Next Cycle");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
+
+        rowSlider.setMinimum(3);
+        rowSlider.setPaintLabels(true);
+        rowSlider.setToolTipText("");
+        rowSlider.setValue(3);
+        rowSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                rowSliderStateChanged(evt);
+            }
+        });
+
+        columnSlider.setMinimum(3);
+        columnSlider.setPaintLabels(true);
+        columnSlider.setValue(3);
+        columnSlider.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                columnSliderStateChanged(evt);
+            }
+        });
+
+        jLabel1.setText("Rows");
+
+        jLabel2.setText("Columns");
+
+        jCheckBox1.setText("Automatic Simulation");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        jTextField1.setText("Number of Ants");
+        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField1ActionPerformed(evt);
+            }
+        });
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField1KeyTyped(evt);
+            }
+        });
+
+        jButton1.setText("Start");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jTextField2.setText("Number of Health");
+        jTextField2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextField2ActionPerformed(evt);
+            }
+        });
+        jTextField2.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jTextField2KeyTyped(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(174, 174, 174)
-                .addComponent(jLabel1)
-                .addContainerGap(199, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(583, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton1)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCheckBox1)
+                    .addComponent(jLabel2)
+                    .addComponent(jLabel1)
+                    .addComponent(columnSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rowSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton5))
+                .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(135, 135, 135)
+                .addContainerGap()
                 .addComponent(jLabel1)
-                .addContainerGap(151, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(rowSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(columnSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton1)
+                .addGap(28, 28, 28)
+                .addComponent(jCheckBox1)
+                .addGap(48, 48, 48)
+                .addComponent(jButton5)
+                .addContainerGap(230, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -131,9 +255,80 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         lineX = 0;
     }//GEN-LAST:event_formComponentShown
 
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        
+        if(antNumber!=0){
+            l.turnAnts();
+            l.flipColour();
+            l.moveAnts();
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void rowSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rowSliderStateChanged
+        // TODO add your handling code here:
+        rows = rowSlider.getValue();
+        l.setRows(rows);
+        l.makeGrid(0);
+    }//GEN-LAST:event_rowSliderStateChanged
+
+    private void columnSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_columnSliderStateChanged
+        // TODO add your handling code here:
+        columns = columnSlider.getValue();
+        l.setColumns(columns);
+        l.makeGrid(0);
+    }//GEN-LAST:event_columnSliderStateChanged
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jTextField1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String text = jTextField1.getText();
+        antNumber = Integer.parseInt(text);
+        text = jTextField2.getText();
+        maxAntHealth = Integer.parseInt(text);
+        l.setAntNumber(antNumber);
+        l.setMaxAntHealth(maxAntHealth);
+        l.setSugar();
+        l.antStart();
+        
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        char c  = evt.getKeyChar();
+        if(!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField1KeyTyped
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+        char c  = evt.getKeyChar();
+        if(!Character.isDigit(c)){
+            evt.consume();
+        }
+    }//GEN-LAST:event_jTextField2KeyTyped
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JSlider columnSlider;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JCheckBox jCheckBox1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField jTextField2;
+    private javax.swing.JSlider rowSlider;
     // End of variables declaration//GEN-END:variables
 
     /**

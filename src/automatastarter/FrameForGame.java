@@ -26,7 +26,9 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
+import utils.Constants;
 
 /**
  *
@@ -42,6 +44,7 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
      */
     public FrameForGame() {
         initComponents();
+        setPreferredSize(new Dimension(Constants.WIDTH,Constants.HEIGHT));
 
         //card layout shows one panel at a time
         cl = new CardLayout();
@@ -85,11 +88,11 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
         cardPanel.setLayout(cardPanelLayout);
         cardPanelLayout.setHorizontalGroup(
             cardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 555, Short.MAX_VALUE)
+            .addGap(0, 800, Short.MAX_VALUE)
         );
         cardPanelLayout.setVerticalGroup(
             cardPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 373, Short.MAX_VALUE)
+            .addGap(0, 600, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -100,9 +103,7 @@ public class FrameForGame extends javax.swing.JFrame implements CardSwitcher {
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addComponent(cardPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 79, Short.MAX_VALUE))
+            .addComponent(cardPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         pack();

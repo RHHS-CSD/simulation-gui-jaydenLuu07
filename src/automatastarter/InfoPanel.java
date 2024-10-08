@@ -7,7 +7,11 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Dimension;
+import static java.awt.image.ImageObserver.HEIGHT;
+import static java.awt.image.ImageObserver.WIDTH;
 import javax.swing.JPanel;
+import utils.Constants;
 
 /**
  *
@@ -21,6 +25,7 @@ public class InfoPanel extends javax.swing.JPanel {
      */
     public InfoPanel(CardSwitcher p) {
         initComponents();
+        setPreferredSize(new Dimension(Constants.WIDTH,Constants.HEIGHT));
         switcher = p;
     }
 

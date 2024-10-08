@@ -7,13 +7,25 @@ package automatastarter;
 
 import utils.CardSwitcher;
 import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
+import static java.awt.image.ImageObserver.HEIGHT;
+import static java.awt.image.ImageObserver.WIDTH;
 import javax.swing.JPanel;
+import utils.ImageUtil;
+import utils.Constants;
 
 /**
  *
  * @author michael.roy-diclemen
  */
 public class IntroPanel extends javax.swing.JPanel {
+    BufferedImage img1;
+    int x = 0;
+    int y = 0;
+    
         public static final String CARD_NAME = "intro";
     CardSwitcher switcher = null;
     /**
@@ -21,7 +33,16 @@ public class IntroPanel extends javax.swing.JPanel {
      */
     public IntroPanel(CardSwitcher p) {
         initComponents();
+        setPreferredSize(new Dimension (Constants.WIDTH,Constants.HEIGHT));
+        img1 = ImageUtil.loadAndResizeImage("ant2.jpg", Constants.WIDTH, Constants.HEIGHT);
         switcher = p;
+    }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        if (img1 != null) {
+            g.drawImage(img1, x, y, this);
+        }
     }
 
     /**
@@ -43,7 +64,7 @@ public class IntroPanel extends javax.swing.JPanel {
             }
         });
 
-        infoButton.setText("I don't know why I'm here");
+        infoButton.setText("Info");
         infoButton.setToolTipText("");
         infoButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -56,23 +77,22 @@ public class IntroPanel extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addGap(151, 151, 151)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(151, 151, 151)
-                        .addComponent(GameButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(infoButton)))
-                .addContainerGap(144, Short.MAX_VALUE))
+                        .addGap(6, 6, 6)
+                        .addComponent(infoButton))
+                    .addComponent(GameButton))
+                .addContainerGap(190, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(130, 130, 130)
                 .addComponent(GameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(infoButton)
-                .addContainerGap(116, Short.MAX_VALUE))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
