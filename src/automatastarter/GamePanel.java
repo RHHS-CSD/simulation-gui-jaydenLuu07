@@ -29,6 +29,7 @@ import javax.swing.KeyStroke;
 import javax.swing.Timer;
 import utils.Constants;
 import automatastarter.LangtonsAnt;
+import java.util.HashSet;
 
 /**
  *
@@ -76,24 +77,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         animTimer = new Timer(10, new AnimTimerTick());
         animTimer.start();
 
-        //set up the key bindings
-        setupKeys();
-
-    }
-
-    private void setupKeys() {
-        //these lines map a physical key, to a name, and then a name to an 'action'.  You will change the key, name and action to suit your needs
-        this.getInputMap().put(KeyStroke.getKeyStroke("LEFT"), "leftKey");
-        this.getActionMap().put("leftKey", new Move("LEFT"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("W"), "wKey");
-        this.getActionMap().put("wKey", new Move("w"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("D"), "dKey");
-        this.getActionMap().put("dKey", new Move("d"));
-
-        this.getInputMap().put(KeyStroke.getKeyStroke("X"), "xKey");
-        this.getActionMap().put("xKey", new Move("x"));
     }
 
     public void paintComponent(Graphics g) {
@@ -133,6 +116,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         jTextField1 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        jCheckBox3 = new javax.swing.JCheckBox();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -189,7 +174,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
         });
 
-        jButton1.setText("Start");
+        jButton1.setText("Start/Reset");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -208,6 +193,10 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             }
         });
 
+        jCheckBox2.setText("Add Boot");
+
+        jCheckBox3.setText("Add Sugar");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -215,7 +204,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(583, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1)
+                    .addComponent(jCheckBox2)
+                    .addComponent(jCheckBox3)
                     .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBox1)
@@ -223,7 +213,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                     .addComponent(jLabel1)
                     .addComponent(columnSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rowSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton5))
+                    .addComponent(jButton5)
+                    .addComponent(jButton1))
                 .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
@@ -241,13 +232,17 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jCheckBox2)
+                .addGap(12, 12, 12)
+                .addComponent(jCheckBox3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton1)
-                .addGap(28, 28, 28)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
-                .addGap(48, 48, 48)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton5)
-                .addContainerGap(230, Short.MAX_VALUE))
+                .addContainerGap(228, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -293,6 +288,19 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         antNumber = Integer.parseInt(text);
         text = jTextField2.getText();
         maxAntHealth = Integer.parseInt(text);
+        l.makeGrid(0);
+        if(jCheckBox2.isSelected()==true){
+            l.setNeedsBoot(true);
+        }
+        else{
+            l.setNeedsBoot(false);
+        }
+        if(jCheckBox3.isSelected()==true){
+            l.setNeedsSugar(true);
+        }
+        else{
+            l.setNeedsSugar(false);
+        }
         l.setAntNumber(antNumber);
         l.setMaxAntHealth(maxAntHealth);
         l.setSugar();
@@ -308,7 +316,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
+        String text = jTextField1.getText();
+        antNumber = Integer.parseInt(text);
+        text = jTextField2.getText();
+        maxAntHealth = Integer.parseInt(text);
+        l.setAntNumber(antNumber);
+        l.setMaxAntHealth(maxAntHealth);
+        l.setSugar();
+        l.antStart();
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
@@ -324,6 +339,8 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton5;
     private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JTextField jTextField1;
@@ -338,9 +355,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseClicked(MouseEvent me) {
-        System.out.println("Click: " + me.getX() + ":" + me.getY());
-        x = 5;
-        y = 5;
+        
     }
 
     /**
@@ -349,7 +364,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mousePressed(MouseEvent me) {
-        System.out.println("Press: " + me.getX() + ":" + me.getY());
+        
     }
 
     /**
@@ -358,7 +373,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseReleased(MouseEvent me) {
-        System.out.println("Release: " + me.getX() + ":" + me.getY());
+        
     }
 
     /**
@@ -367,7 +382,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseEntered(MouseEvent me) {
-        System.out.println("Enter: " + me.getX() + ":" + me.getY());
+        
     }
 
     /**
@@ -376,7 +391,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
      * @param me
      */
     public void mouseExited(MouseEvent me) {
-        System.out.println("Exit: " + me.getX() + ":" + me.getY());
+        
     }
 
     /**

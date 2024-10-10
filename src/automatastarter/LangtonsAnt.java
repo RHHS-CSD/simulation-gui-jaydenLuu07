@@ -36,11 +36,13 @@ public class LangtonsAnt {
     //Variables for the boot
     int bootRow;
     int bootColumn;
+    boolean needsBoot;
     
     //Variales for the sugar cubes
     int[] sugarRow;
     int[] sugarColumn;
     boolean[] isEaten;
+    boolean needsSugar;
     
     //Methods for setting 
     public void setRows(int rows){
@@ -54,6 +56,12 @@ public class LangtonsAnt {
     }
     public void setMaxAntHealth(int maxAntHealth){
         this.maxAntHealth = maxAntHealth;
+    }
+    public void setNeedsBoot(boolean needsBoot){
+        this.needsBoot = needsBoot;
+    }
+    public void setNeedsSugar(boolean needsSugar){
+        this.needsSugar = needsSugar;
     }
     
     
@@ -263,7 +271,7 @@ public class LangtonsAnt {
             
             //Moving depending on direction
             switch(antDirection[i]){
-                case "UP":
+                case "LEFT":
                     //If the ant is on the edge, then turn it around and move the opposite direction
                     if(antsRow[i]==0){
                         turnRight(i);
@@ -275,7 +283,7 @@ public class LangtonsAnt {
                         antsRow[i]=antsRow[i]-1;
                     }
                     break;
-                case "RIGHT":
+                case "DOWN":
                     if(antsColumn[i]==(columns-1)){
                         turnRight(i);
                         turnRight(i);
@@ -285,7 +293,7 @@ public class LangtonsAnt {
                         antsColumn[i]=antsColumn[i]+1;
                     }
                     break;
-                case "DOWN":
+                case "RIGHT":
                     if(antsRow[i]==(rows-1)){
                         turnRight(i);
                         turnRight(i);
@@ -295,7 +303,7 @@ public class LangtonsAnt {
                         antsRow[i]=antsRow[i]+1;
                     }
                     break;
-                case "LEFT":
+                case "UP":
                     if(antsColumn[i]==0){
                         turnRight(i);
                         turnRight(i);
@@ -336,7 +344,7 @@ public class LangtonsAnt {
             default:
                 return 2;
         }
-    } 
+    }
     
     //Randomly moves the boot and places it in a 3x3 area around a random ant
     private void moveBoot(){
