@@ -32,6 +32,7 @@ public class LangtonsAnt {
     String[] antDirection;
     int[] antHealth;
     int maxAntHealth;
+    int antsAlive;
     
     //Variables for the boot
     int bootRow;
@@ -43,6 +44,7 @@ public class LangtonsAnt {
     int[] sugarColumn;
     boolean[] isEaten;
     boolean needsSugar;
+    int cubesLeft;
     
     //Methods for setting 
     public void setRows(int rows){
@@ -62,6 +64,14 @@ public class LangtonsAnt {
     }
     public void setNeedsSugar(boolean needsSugar){
         this.needsSugar = needsSugar;
+    }
+    public void setCellSize(){
+        if(rows<columns){
+            cellSize = (Constants.HEIGHT-50)/(columns+1);
+        }
+        else{
+            cellSize = (Constants.HEIGHT-50)/(rows+1);
+        }
     }
     
     
@@ -96,13 +106,6 @@ public class LangtonsAnt {
         String spaces = "";
         String boot = "";
         String sugar = "";
-        
-        if(rows<columns){
-            cellSize = (Constants.HEIGHT-50)/(columns+1);
-        }
-        else{
-            cellSize = (Constants.HEIGHT-50)/(rows+1);
-        }
         
         for (int i=0;i<rows;i++){
             for(int j=0;j<columns;j++){
@@ -190,6 +193,9 @@ public class LangtonsAnt {
             
             //Setting ant health
             antHealth[i] = maxAntHealth;
+            
+            
+            antsAlive = antNumber;
         }
     }
     
@@ -319,6 +325,7 @@ public class LangtonsAnt {
             for(int j=0;j<antNumber;j++){
                 if(antsColumn[i]==sugarColumn[j]&&antsRow[i]==sugarRow[j]&&isEaten[j]==false){
                     isEaten[j]=true;
+                    cubesLeft = cubesLeft-1;
                     //Maxes out an ant's health if it eats a sugar cube
                     antHealth[i]=maxAntHealth;
                 }
@@ -347,7 +354,7 @@ public class LangtonsAnt {
     }
     
     //Randomly moves the boot and places it in a 3x3 area around a random ant
-    private void moveBoot(){
+    public void moveBoot(){
         boolean targetFound = false;
         int target = 0;
         
@@ -382,12 +389,14 @@ public class LangtonsAnt {
     }
     
     //Kill any ant that shares a cell with a boot
-    private void killAnt(){
+    public void killAnt(){
         for (int i=0;i<antNumber;i++){
             //Making sure they are on the same cell and are alive
             if(antsRow[i]==bootRow&&antsColumn[i]==bootColumn&&antHealth[i]!=0){
                 antHealth[i] = antHealth[i] -1;
-                System.out.println("Squash!");
+                if(antHealth[i]==0){
+                    antsAlive=antsAlive-1;
+                }
             }
         }
     }
@@ -404,10 +413,11 @@ public class LangtonsAnt {
             sugarColumn[i] = (int)(Math.random()*columns);
             isEaten[i] = false;
         }
+        cubesLeft = antNumber;
     }
     
     //Determining if the simulation is over (without user input)
-    private int needsToStop(){
+    public int needsToStop(){
         int antsDead = 0;
         int sugarsEaten = 0;
         

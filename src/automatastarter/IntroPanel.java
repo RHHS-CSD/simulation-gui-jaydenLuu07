@@ -10,10 +10,13 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import static java.awt.image.ImageObserver.HEIGHT;
 import static java.awt.image.ImageObserver.WIDTH;
 import javax.swing.JPanel;
+import javax.swing.Timer;
 import utils.ImageUtil;
 import utils.Constants;
 
@@ -28,20 +31,30 @@ public class IntroPanel extends javax.swing.JPanel {
     
         public static final String CARD_NAME = "intro";
     CardSwitcher switcher = null;
+    Timer animTimer;
+    
     /**
      * Creates new form IntroPanel
      */
     public IntroPanel(CardSwitcher p) {
         initComponents();
+        animTimer = new Timer(60, new IntroPanel.AnimTimerTick());
+        animTimer.start();
         setPreferredSize(new Dimension (Constants.WIDTH,Constants.HEIGHT));
         img1 = ImageUtil.loadAndResizeImage("ant2.jpg", Constants.WIDTH, Constants.HEIGHT);
         switcher = p;
+        jLabel1.setText("Jayden's Ants");
     }
     
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (img1 != null) {
             g.drawImage(img1, x, y, this);
+            if(x<Constants.WIDTH&&y<Constants.HEIGHT){
+                x=x+1;
+                y=y+1;
+            }
+            img1 = ImageUtil.loadAndResizeImage("ant2.jpg", Constants.WIDTH-x, Constants.HEIGHT-y);
         }
     }
 
@@ -56,6 +69,7 @@ public class IntroPanel extends javax.swing.JPanel {
 
         GameButton = new javax.swing.JButton();
         infoButton = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         GameButton.setText("Game");
         GameButton.addActionListener(new java.awt.event.ActionListener() {
@@ -72,27 +86,32 @@ public class IntroPanel extends javax.swing.JPanel {
             }
         });
 
+        jLabel1.setText("jLabel1");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(151, 151, 151)
+                .addGap(356, 356, 356)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
                         .addComponent(infoButton))
                     .addComponent(GameButton))
-                .addContainerGap(190, Short.MAX_VALUE))
+                .addContainerGap(384, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(130, 130, 130)
+                .addGap(110, 110, 110)
+                .addComponent(jLabel1)
+                .addGap(90, 90, 90)
                 .addComponent(GameButton)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(infoButton)
-                .addContainerGap(110, Short.MAX_VALUE))
+                .addContainerGap(322, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -103,10 +122,19 @@ public class IntroPanel extends javax.swing.JPanel {
     private void infoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infoButtonActionPerformed
         switcher.switchToCard(InfoPanel.CARD_NAME);
     }//GEN-LAST:event_infoButtonActionPerformed
+    private class AnimTimerTick implements ActionListener {
 
+        public void actionPerformed(ActionEvent ae) {
+            //the stuff we want to change every clock tick
+            
+            //force redraw
+            repaint();
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton GameButton;
     private javax.swing.JButton infoButton;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }

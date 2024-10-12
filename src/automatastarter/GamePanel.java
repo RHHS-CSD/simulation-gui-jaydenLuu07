@@ -37,6 +37,9 @@ import java.util.HashSet;
  */
 public class GamePanel extends javax.swing.JPanel implements MouseListener {
     BufferedImage img2;
+    BufferedImage img3;
+    BufferedImage img4;
+    BufferedImage img5;
     LangtonsAnt l = new LangtonsAnt();
     
     public static final String CARD_NAME = "game";
@@ -47,6 +50,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     //Variables for grid
     int rows = Constants.MINROW;
     int columns = Constants.MINCOLUMN;
+    int speed = 10;
     
     //Variables for ants
     int antNumber;
@@ -74,27 +78,60 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         //tells us the panel that controls this one
         switcher = p;
         //create and start a Timer for animation
-        animTimer = new Timer(10, new AnimTimerTick());
+        animTimer = new Timer(speed, new AnimTimerTick());
         animTimer.start();
 
     }
 
     public void paintComponent(Graphics g) {
-        if(jCheckBox1.isSelected()==true){
-            if(antNumber!=0){
-                l.turnAnts();
-                l.flipColour();
-                l.moveAnts();
-            }
-        }
         super.paintComponent(g);
-        l.printGrid(g);
-        img2 = ImageUtil.loadAndResizeImage("movingAnt.png", l.cellSize, l.cellSize);
-        for(int i=0;i<antNumber;i++){
-            if (img2!=null){
-                g.drawImage(img2, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
+        if(l.needsToStop()==2){
+            jLabel6.setText("");
+            if(jCheckBox1.isSelected()==true){
+                if(antNumber!=0){
+                    l.turnAnts();
+                    l.flipColour();
+                    l.moveAnts();
+                    l.moveBoot();
+                    l.killAnt();
+                }
+                jLabel3.setText("Ants Alive: "+l.antsAlive);
+                jLabel4.setText("Cubes Left: "+l.cubesLeft);
+            }
+
+            l.printGrid(g);
+            for(int i=0;i<antNumber;i++){
+                if(l.antHealth[i]!=0){
+                    if (img2!=null){
+                        g.drawImage(img2, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
+                    }
+                }
+                else{
+                    if (img5!=null){
+                        g.drawImage(img5, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
+                    }
+                }
+
+            }
+            if(l.needsSugar==true){
+                for(int i=0;i<antNumber;i++){
+                    if (img3!=null&&l.isEaten[i]!=true){
+                        g.drawImage(img3, l.sugarRow[i]*l.cellSize, l.sugarColumn[i]*l.cellSize, this);
+                    }
+                } 
+            }
+            if(l.needsBoot==true){
+                g.drawImage(img4, l.bootRow*l.cellSize, l.bootColumn*l.cellSize, this);
             }
         }
+        else if(l.needsToStop()==1){
+            jLabel6.setText("Ants Win!");
+        }
+        else if(l.needsToStop()==0&&l.antNumber!=0){
+            jLabel6.setText("Boot Wins!");
+        }
+        
+        
         
     }
 
@@ -118,6 +155,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         jTextField2 = new javax.swing.JTextField();
         jCheckBox2 = new javax.swing.JCheckBox();
         jCheckBox3 = new javax.swing.JCheckBox();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jSlider1 = new javax.swing.JSlider();
+        jLabel5 = new javax.swing.JLabel();
+        jLabel6 = new javax.swing.JLabel();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -197,24 +239,48 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
         jCheckBox3.setText("Add Sugar");
 
+        jLabel3.setText("Ants Alive: ");
+
+        jLabel4.setText("Cubes Left: ");
+
+        jSlider1.setMinimum(1);
+        jSlider1.setValue(10);
+        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSlider1StateChanged(evt);
+            }
+        });
+
+        jLabel5.setText("Speed");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(583, Short.MAX_VALUE)
+                .addGap(158, 158, 158)
+                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 302, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel5)
+                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBox2)
-                    .addComponent(jCheckBox3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jCheckBox1)
                     .addComponent(jLabel2)
                     .addComponent(jLabel1)
                     .addComponent(columnSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(rowSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5)
-                    .addComponent(jButton1))
+                    .addComponent(jButton1)
+                    .addComponent(jCheckBox3)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))))
                 .addGap(17, 17, 17))
         );
         layout.setVerticalGroup(
@@ -229,20 +295,31 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(columnSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jCheckBox2)
-                .addGap(12, 12, 12)
-                .addComponent(jCheckBox3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jCheckBox3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jButton1)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jCheckBox1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jButton5)
-                .addContainerGap(228, Short.MAX_VALUE))
+                .addGap(80, 80, 80)
+                .addComponent(jLabel5)
+                .addGap(12, 12, 12)
+                .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(92, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -257,21 +334,22 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             l.turnAnts();
             l.flipColour();
             l.moveAnts();
+            l.moveBoot();
+            l.killAnt();
         }
+        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void rowSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_rowSliderStateChanged
         // TODO add your handling code here:
         rows = rowSlider.getValue();
-        l.setRows(rows);
-        l.makeGrid(0);
+        
     }//GEN-LAST:event_rowSliderStateChanged
 
     private void columnSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_columnSliderStateChanged
         // TODO add your handling code here:
         columns = columnSlider.getValue();
-        l.setColumns(columns);
-        l.makeGrid(0);
+
     }//GEN-LAST:event_columnSliderStateChanged
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
@@ -288,6 +366,14 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         antNumber = Integer.parseInt(text);
         text = jTextField2.getText();
         maxAntHealth = Integer.parseInt(text);
+        l.setRows(rows);
+        l.setColumns(columns);
+        l.setCellSize();
+        img2 = ImageUtil.loadAndResizeImage("movingAnt.png", l.cellSize, l.cellSize);
+        img3 = ImageUtil.loadAndResizeImage("Sugar Cube.png", l.cellSize, l.cellSize);
+        img4 = ImageUtil.loadAndResizeImage("boot.png", l.cellSize, l.cellSize);
+        img5 = ImageUtil.loadAndResizeImage("deadAnt.png", l.cellSize, l.cellSize);
+        
         l.makeGrid(0);
         if(jCheckBox2.isSelected()==true){
             l.setNeedsBoot(true);
@@ -333,6 +419,13 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
         }
     }//GEN-LAST:event_jTextField2KeyTyped
 
+    private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        int speed = jSlider1.getValue();
+        animTimer.stop();
+        animTimer = new Timer(speed, new AnimTimerTick());
+        animTimer.start();
+    }//GEN-LAST:event_jSlider1StateChanged
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JSlider columnSlider;
@@ -343,6 +436,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     private javax.swing.JCheckBox jCheckBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
+    private javax.swing.JSlider jSlider1;
     private javax.swing.JTextField jTextField1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JSlider rowSlider;
