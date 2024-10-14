@@ -35,7 +35,7 @@ import java.util.HashSet;
  *
  * @author michael.roy-diclemen
  */
-public class GamePanel extends javax.swing.JPanel implements MouseListener {
+public class GamePanel extends javax.swing.JPanel {
     BufferedImage img2;
     BufferedImage img3;
     BufferedImage img4;
@@ -55,12 +55,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     //Variables for ants
     int antNumber;
     int maxAntHealth;
-    int[] antHealth;
     
     //variables to control your animation elements
     int x = 0;
-    int y = 10;
-    int xdir = 5;
     int lineX = 0;
 
     /**
@@ -73,8 +70,6 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
         this.setFocusable(true);
 
-        // tell the program we want to listen to the mouse
-        addMouseListener(this);
         //tells us the panel that controls this one
         switcher = p;
         //create and start a Timer for animation
@@ -83,50 +78,71 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
 
     }
 
+    /**
+     * Displays items to the screen
+     * @param g 
+     */
+    //Drawing items
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
+        //Determines whether or not to draw the item
         if(l.needsToStop()==2){
+            //Gets rid of the win message
             jLabel6.setText("");
+            //Runs if the automatic simulation is wanted
             if(jCheckBox1.isSelected()==true){
                 if(antNumber!=0){
                     l.turnAnts();
                     l.flipColour();
                     l.moveAnts();
-                    l.moveBoot();
-                    l.killAnt();
+                    //Runs if boot is selected
+                    if(l.needsBoot==true){
+                        l.moveBoot();
+                        l.killAnt();
+                    }
                 }
-                jLabel3.setText("Ants Alive: "+l.antsAlive);
-                jLabel4.setText("Cubes Left: "+l.cubesLeft);
             }
-
+            //Updates the counter
+            jLabel3.setText("Ants Alive: "+l.antsAlive);
+            jLabel4.setText("Cubes Left: "+l.cubesLeft);
+            
+            //Draws the grid
             l.printGrid(g);
+            
+            //Draws the ants
             for(int i=0;i<antNumber;i++){
+                //Alive ants
                 if(l.antHealth[i]!=0){
                     if (img2!=null){
                         g.drawImage(img2, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
                     }
                 }
+                //Dead ants
                 else{
                     if (img5!=null){
                         g.drawImage(img5, l.antsRow[i]*l.cellSize, l.antsColumn[i]*l.cellSize, this);
                     }
                 }
-
             }
+            //Draws the sugar
             if(l.needsSugar==true){
                 for(int i=0;i<antNumber;i++){
+                    //Makes sure the sugar is not eaten
                     if (img3!=null&&l.isEaten[i]!=true){
                         g.drawImage(img3, l.sugarRow[i]*l.cellSize, l.sugarColumn[i]*l.cellSize, this);
                     }
                 } 
             }
+            //Draws boot
             if(l.needsBoot==true){
                 g.drawImage(img4, l.bootRow*l.cellSize, l.bootColumn*l.cellSize, this);
             }
         }
+        //Stops if all sugar is eaten
         else if(l.needsToStop()==1){
             jLabel6.setText("Ants Win!");
         }
+        //Stops if all ants are dead
         else if(l.needsToStop()==0&&l.antNumber!=0){
             jLabel6.setText("Boot Wins!");
         }
@@ -279,9 +295,9 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
                             .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))))
-                .addGap(17, 17, 17))
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -334,8 +350,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
             l.turnAnts();
             l.flipColour();
             l.moveAnts();
-            l.moveBoot();
-            l.killAnt();
+            //Runs if boot is selected
+            if(l.needsBoot==true){
+                l.moveBoot();
+                l.killAnt();
+            }
         }
         
     }//GEN-LAST:event_jButton5ActionPerformed
@@ -362,31 +381,39 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_jTextField1ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        //Converting inputted ant number and max health to integers
         String text = jTextField1.getText();
         antNumber = Integer.parseInt(text);
         text = jTextField2.getText();
         maxAntHealth = Integer.parseInt(text);
+        
+        //Sets the grid dimensions
         l.setRows(rows);
         l.setColumns(columns);
         l.setCellSize();
+        l.makeGrid(0);
+        
+        //Loads images to the correct size
         img2 = ImageUtil.loadAndResizeImage("movingAnt.png", l.cellSize, l.cellSize);
         img3 = ImageUtil.loadAndResizeImage("Sugar Cube.png", l.cellSize, l.cellSize);
         img4 = ImageUtil.loadAndResizeImage("boot.png", l.cellSize, l.cellSize);
         img5 = ImageUtil.loadAndResizeImage("deadAnt.png", l.cellSize, l.cellSize);
         
-        l.makeGrid(0);
+        //Determines if boot is needed
         if(jCheckBox2.isSelected()==true){
             l.setNeedsBoot(true);
         }
         else{
             l.setNeedsBoot(false);
         }
+        //Determines if sugar is needed
         if(jCheckBox3.isSelected()==true){
             l.setNeedsSugar(true);
         }
         else{
             l.setNeedsSugar(false);
         }
+        //Starts ant things
         l.setAntNumber(antNumber);
         l.setMaxAntHealth(maxAntHealth);
         l.setSugar();
@@ -395,6 +422,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField1KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyTyped
+        //Prevents non-numbers to be entered
         char c  = evt.getKeyChar();
         if(!Character.isDigit(c)){
             evt.consume();
@@ -402,17 +430,11 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_jTextField1KeyTyped
 
     private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        String text = jTextField1.getText();
-        antNumber = Integer.parseInt(text);
-        text = jTextField2.getText();
-        maxAntHealth = Integer.parseInt(text);
-        l.setAntNumber(antNumber);
-        l.setMaxAntHealth(maxAntHealth);
-        l.setSugar();
-        l.antStart();
+        
     }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jTextField2KeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField2KeyTyped
+        //Preents non-numbers to be entered
         char c  = evt.getKeyChar();
         if(!Character.isDigit(c)){
             evt.consume();
@@ -420,6 +442,7 @@ public class GamePanel extends javax.swing.JPanel implements MouseListener {
     }//GEN-LAST:event_jTextField2KeyTyped
 
     private void jSlider1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSlider1StateChanged
+        //Changes timer update speed
         int speed = jSlider1.getValue();
         animTimer.stop();
         animTimer = new Timer(speed, new AnimTimerTick());

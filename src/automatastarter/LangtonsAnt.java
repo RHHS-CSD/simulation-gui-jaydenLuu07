@@ -74,20 +74,6 @@ public class LangtonsAnt {
         }
     }
     
-    
-    //Converts the inputted colour to an integer representation
-    private int gridColour(String colour){
-        switch (colour) {
-            case "B":
-                return 1;
-            case "W":
-                return 0;
-            default:
-                System.out.println("Invalid input.  Defaulting to white...");
-                return 0;
-        }
-    }
-    
     //Intiialzing the grid with variable starting colour as well as number of rows and colums
     public void makeGrid(int startingColour){
         grid = new int[rows][columns];
@@ -101,11 +87,6 @@ public class LangtonsAnt {
     
     //Printing out the grid
     public void printGrid(Graphics g){
-        String ants = "";
-        String cell = "";
-        String spaces = "";
-        String boot = "";
-        String sugar = "";
         
         for (int i=0;i<rows;i++){
             for(int j=0;j<columns;j++){
@@ -119,43 +100,6 @@ public class LangtonsAnt {
                 //Drawing borders
                 g.setColor(Color.RED);
                 g.drawRect(i*cellSize, j*cellSize,cellSize,cellSize);
-                /*
-                for (int h=0;h<antNumber;h++){
-                    //Determining if there is an ant(s) on the cell (the more "a"s, the more ants on that particular cell)
-                    if (antsRow[h]==i&&antsColumn[h]==j){
-                        //Labeling the ants "d" if they're dead
-                        if(antHealth[h]==0){
-                            ants=ants+"d";
-                        }
-                        else{
-                            ants = ants+"a";   
-                        }
-                    }
-                    //Determining if there is a sugar cube on the cell
-                    if (sugarRow[h]==i&&sugarColumn[h]==j&&isEaten[h]==false){
-                        sugar = sugar+"s";
-                    }
-                }
-                
-                //Printing the boot
-                if (bootRow==i&&bootColumn==j){
-                    boot= boot+"b";
-                }
-                
-                /*
-                //Making a nice looking grid
-                cell = (grid[i][j]+ants+boot+sugar);
-                for(int k=(antNumber+antNumber+2);k>=cell.length();k--){
-                    spaces = spaces+" ";
-                }
-                System.out.print(cell+spaces);
-                */
-
-                //Resetting variables for next cell
-                ants = "";
-                spaces = "";
-                boot = "";
-                sugar = "";
             }
         }
         
@@ -194,7 +138,7 @@ public class LangtonsAnt {
             //Setting ant health
             antHealth[i] = maxAntHealth;
             
-            
+            //All ants start alive
             antsAlive = antNumber;
         }
     }
@@ -330,26 +274,6 @@ public class LangtonsAnt {
                     antHealth[i]=maxAntHealth;
                 }
             }
-        }
-    }
-    
-    //Returns a boolean depending if the answer is stop
-    private int shouldStop(Scanner keyboard){
-        //Asking for answer
-        System.out.print("Continue to next cycle? ");
-        String answer = keyboard.nextLine();
-        
-        //Changing the answer to uppercase for simplicity
-        answer = answer.toUpperCase();
-        
-        //Determining the output
-        switch (answer) {
-            case "RESET":
-                return 0;
-            case "STOP":
-                return 1;
-            default:
-                return 2;
         }
     }
     
