@@ -23,6 +23,7 @@ public class InfoPanel extends javax.swing.JPanel {
     /**
      * Creates new form IntroPanel
      */
+    
     public InfoPanel(CardSwitcher p) {
         initComponents();
         setPreferredSize(new Dimension(Constants.WIDTH,Constants.HEIGHT));

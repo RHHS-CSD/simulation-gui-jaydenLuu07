@@ -34,7 +34,7 @@ public class IntroPanel extends javax.swing.JPanel {
     Timer animTimer;
     
     /**
-     * Creates new form IntroPanel
+     * Creates new form IntroPanel, loads splashscreen and title
      */
     public IntroPanel(CardSwitcher p) {
         initComponents();
@@ -46,6 +46,10 @@ public class IntroPanel extends javax.swing.JPanel {
         jLabel1.setText("Jayden's Ants");
     }
     
+    /**
+     * Draws the splashscreen and title, shrinks the splashscreen every time the timer updates
+     * @param g 
+     */
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         if (img1 != null) {

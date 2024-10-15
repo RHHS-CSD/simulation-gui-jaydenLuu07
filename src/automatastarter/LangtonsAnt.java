@@ -74,6 +74,10 @@ public class LangtonsAnt {
         }
     }
     
+    /**
+     * Sets all of the tiles in the grid to a certain colour
+     * @param startingColour 
+     */
     //Intiialzing the grid with variable starting colour as well as number of rows and colums
     public void makeGrid(int startingColour){
         grid = new int[rows][columns];
@@ -85,6 +89,10 @@ public class LangtonsAnt {
         }
     }
     
+    /**
+     * Draws the grid cells and its borders
+     * @param g 
+     */
     //Printing out the grid
     public void printGrid(Graphics g){
         
@@ -105,6 +113,9 @@ public class LangtonsAnt {
         
     }
     
+    /**
+     * Gives values to ant related variables when the game is started
+     */
     //Determines the starting coords and direction for all of the ants
     public void antStart(){
         //Setting the index of ant coordinate lists
@@ -167,6 +178,9 @@ public class LangtonsAnt {
         turnRight(antIndex);
     }
     
+    /**
+     * Changes the direction of all the ants, depending what tile they are on 
+     */
     //Turning stage for all ants
     public void turnAnts(){
         int cellState;
@@ -187,6 +201,9 @@ public class LangtonsAnt {
         }
     }
     
+    /**
+     * Flips the colour of each occupied cell (with an alive ant)
+     */
     //Flipping the cell colour for all ants
     public void flipColour(){
         int cellState;
@@ -208,6 +225,9 @@ public class LangtonsAnt {
         }
     }
     
+    /**
+     * Translating the coordinate position of every alive ant by 1 depending on what direction they are facing, as well as if they will hit a wall.  Ants will also eat sugar if they share the same cell
+     */
     //Moving all of the ants
     public void moveAnts(){
         
@@ -277,7 +297,9 @@ public class LangtonsAnt {
         }
     }
     
-    //Randomly moves the boot and places it in a 3x3 area around a random ant
+    /**
+     * Randomly moves the boot and places it in a 3x3 area around a random ant
+     */
     public void moveBoot(){
         boolean targetFound = false;
         int target = 0;
@@ -312,7 +334,9 @@ public class LangtonsAnt {
         }
     }
     
-    //Kill any ant that shares a cell with a boot
+    /**
+     * Kill any ant that shares a cell with a boot
+     */
     public void killAnt(){
         for (int i=0;i<antNumber;i++){
             //Making sure they are on the same cell and are alive
@@ -325,7 +349,9 @@ public class LangtonsAnt {
         }
     }
     
-    //Setting the sugar tiles (amount is number of ants)
+    /**
+     * Setting the coordinates of the sugar tiles, number is equal to the amount of ants
+     */
     public void setSugar(){
         sugarRow = new int[antNumber];
         sugarColumn = new int[antNumber];
@@ -340,7 +366,10 @@ public class LangtonsAnt {
         cubesLeft = antNumber;
     }
     
-    //Determining if the simulation is over (without user input)
+    /**
+     * Determines if the simulation's stopping requirements are met (all ants dead/all sugar cubes eaten)
+     * @return 
+     */
     public int needsToStop(){
         int antsDead = 0;
         int sugarsEaten = 0;
